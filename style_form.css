@@ -199,3 +199,9 @@
             margin-top: 20px;
         }
         
+        /* customer form styles */
+        .customer-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }

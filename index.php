@@ -8,7 +8,7 @@
     $sql = "SELECT * FROM products";
 
     if ($keyword != ''){
-        $sql .= " WHERE ProductName LIKE ? or Category LIKE ?";
+        $sql .= "WHERE ProductName LIKE ? or Category LIKE ?";
 
         $stmt = $conn->prepare($sql);
         $searchTerm = "%$keyword%";
@@ -42,6 +42,9 @@
             <div>
                 <a href="customer.php">Customer</a>
             </div>
+            <div>
+                <a href="shippingCompanies.php">shipping Companies</a>
+            </div>
         </div>
         
         <!-- ค้นหาสินค้า -->
@@ -72,6 +75,8 @@
                 <tr>
                     <!-- แสดงอันดับ -->
                     <td><?= htmlspecialchars($index) ?></td>
+
+                    <!-- แสดงชื่อสินค้าที่เป็นลิงก์และส่งค่า id ไปยังฟอร์ม -->
                     <td>
                         <a href="product_form.php?id=<?= htmlspecialchars($row['ProductID']) ?>">
                             <?= htmlspecialchars($row['ProductName']) ?>

@@ -120,7 +120,7 @@
             </div>
                
             <div class="form-actions">
-                 <!-- delete -->
+                <!-- delete -->
                 <?php
                     if ($product != null) {
                         echo '<a href="product_delete.php?id=' . htmlspecialchars($product['ProductID']) . '" class="formDelete" onclick="return confirm(\'Are you sure you want to delete this product?\')">Delete</a>';

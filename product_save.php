@@ -84,6 +84,7 @@
         exit();
     }
 
+    // ถ้าไม่มีข้อผิดพลาด ให้บันทึกข้อมูลลงฐานข้อมูล
     if ($ProductID != '') {
         // อัปเดตข้อมูลสินค้า
         $stmt = $conn->prepare("UPDATE products SET ProductName=?, Picture=?, Category=?, ProductDescription=?, Price=?, QuantityStock=? WHERE ProductID=?");
@@ -93,9 +94,10 @@
         $stmt = $conn->prepare("INSERT INTO products (ProductName, Picture, Category, ProductDescription, Price, QuantityStock) VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("ssssdi", $ProductName, $Picture, $Category, $ProductDescription, $Price, $QuantityStock);
     }
+    // ดำเนินการรันคำสั่ง SQL
     $stmt->execute();
-    $stmt->close();
-    $conn->close();
+    $stmt->close(); // ปิดคำสั่งที่เตรียมไว้
+    $conn->close(); // ปิดการเชื่อมต่อฐานข้อมูล
 
     // เปลี่ยนเส้นทางกลับไปยังหน้ารายการสินค้า
     header("Location: index.php");

@@ -41,6 +41,9 @@
             <div>
                 <a href="index.php">Product</a>
             </div>
+            <div>
+                <a href="shippingCompanies.php">shipping Companies</a>
+            </div>
         </div>
 
         <!-- ช่องค้นหาชื่อ customer -->
@@ -52,7 +55,44 @@
                 <!-- ปุ่มรีเซ็ตเพื่อเคลียร์คำค้นหา -->
                 <button type="button"  class="button-reset" onclick="window.location.href='customer.php'">Reset</button>
             </form>
+
+            <div class="margin-left-10">
+                <a href="customer_form.php">Create a new Customer</a>
+            </div>
         </div>
+
+           <table border="1" class="table white-bg rounded margin-top-20">
+                <th>Customer Id</th>
+                <th>Customer Name</th>
+                <th>Address Line 1</th>
+                <th>City</th>
+                <th>Country</th>
+                <th>Postal Code</th>
+                <th>Mobile Phone</th>
+
+                <?php while ($customer = $result->fetch_assoc()): ?>
+                    <tr>
+                        <!-- แสดงอันดับ -->
+                        <td><?= htmlspecialchars($index) ?></td>
+
+                        <!-- แสดงชื่อ customer ที่เป็นลิงก์และส่งค่า id ไปยังฟอร์ม -->
+                        <td>
+                            <a href="customer_form.php?id=<?= htmlspecialchars($customer['CustomerID']) ?>">
+                                <?= htmlspecialchars($customer['CustomerName']) ?>
+                            </a>
+                        </td>
+                        <td>
+                            <?= htmlspecialchars($customer['AddressLine1']) ?>
+                        </td>
+                        <td><?= htmlspecialchars($customer['City']) ?></td>
+                        <td><?= htmlspecialchars($customer['Country']) ?></td>
+                        <td><?= htmlspecialchars($customer['PostalCode']) ?></td>
+                        <td><?= htmlspecialchars($customer['MobilePhone']) ?></td>
+                    </tr>
+                    <?php $index++;?>
+            <?php endwhile;?>
+           </table>
+
     </div>
 
 </body>
