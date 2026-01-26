@@ -176,3 +176,26 @@
                 width: 100%;
             }
         }
+        .error-message {
+            color: #ff4c4c;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+         .formDelete {
+            background: #ff4c4c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 14px 30px;
+            text-decoration: none;
+        }
+        .margin-top-20 {
+            margin-top: 20px;
+        }
+        

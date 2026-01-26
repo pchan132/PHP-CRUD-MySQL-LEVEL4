@@ -1,4 +1,5 @@
 <?php
+    session_start(); // เริ่ม session เพื่อเก็บ error messages
     include 'db.php';
     include 'validate.php';
 
@@ -56,13 +57,31 @@
 
     // ถ้ามีข้อผิดพลาดใด ๆ ให้แสดงผลลัพธ์และหยุดการทำงาน
     if ($ProductNameErr || $PictureErr || $CategoryErr || $ProductDescriptionErr || $PriceErr || $QuantityStockErr) {
-        die("ข้อมูลที่ส่งมาไม่ถูกต้อง: 
-            $ProductNameErr 
-            $PictureErr 
-            $CategoryErr 
-            $ProductDescriptionErr 
-            $PriceErr 
-            $QuantityStockErr");
+        
+        // เก็บข้อผิดพลาดไว้ใน session
+        $_SESSION['errors'] = [
+            'ProductName' => $ProductNameErr,
+            'Picture' => $PictureErr,
+            'Category' => $CategoryErr,
+            'ProductDescription' => $ProductDescriptionErr,
+            'Price' => $PriceErr,
+            'QuantityStock' => $QuantityStockErr
+        ];
+
+        // เก็บข้อมูลเดิมไว้ใน session
+        $_SESSION['old'] = [
+            'ProductID' => $ProductID,
+            'ProductName' => $ProductName,
+            'Picture' => $Picture,
+            'Category' => $Category,
+            'ProductDescription' => $ProductDescription,
+            'Price' => $Price,
+            'QuantityStock' => $QuantityStock
+        ];
+
+        header("Location: product_form.php");
+
+        exit();
     }
 
     if ($ProductID != '') {

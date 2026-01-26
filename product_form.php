@@ -1,6 +1,16 @@
 <?php
+    session_start(); // เริ่ม session เพื่อรับค่า error messages
+
     include 'db.php';
 
+    // เก็บ Error messages
+    $errors = $_SESSION['errors'] ?? [];
+    // เก็บค่าที่ผู้ใช้กรอกไว้ก่อนหน้า
+    $old = $_SESSION['old'] ?? [];
+    // ล้างค่า error messages และ old data หลังจากดึงมาใช้แล้ว
+    unset($_SESSION['errors'], $_SESSION['old']);
+
+    // ดึงข้อมูลสินค้าจากฐานข้อมูลถ้ามีการส่ง id มาหา ผ่าน URL
     $id = $_GET['id'] ?? '';
     $product = null; // ตัวแปรเก็บข้อมูลสินค้า
 
@@ -21,6 +31,7 @@
     // แสดงข้อมูลสินค้า (สำหรับตรวจสอบ) ตาม id ที่ส่งมา
     // echo '<pre>';
     // print_r($product);
+
 ?>
 
 <!DOCTYPE html>
@@ -46,40 +57,78 @@
         </h1>
 
         <form class="product-form" method="POST" action="product_save.php">
-            <input type="hidden" name="ProductID" value="<?php echo htmlspecialchars($product['ProductID'] ?? ''); ?>">
+            <input type="hidden" name="ProductID" value="<?php echo htmlspecialchars($product['ProductID'] ?? $old['ProductID'] ?? ''); ?>">
 
             <div class="form-group">
                 <label for="ProductName" class="form-label">Product Name:</label>
-                <input type="text" id="ProductName" name="ProductName" class="form-input" value="<?php echo htmlspecialchars($product['ProductName'] ?? ''); ?>" required>
+                <input type="text" id="ProductName" name="ProductName" class="form-input" value="<?php echo htmlspecialchars($product['ProductName'] ?? $old['ProductName'] ?? ''); ?>" required>
+
+                <!-- แสดง Error message ถ้ามี -->
+                 <?php if (!empty($errors['ProductName'])): ?>
+                    <div class="error-message"><?php echo htmlspecialchars($errors['ProductName']); ?></div>
+                 <?php endif; ?>
             </div>
 
             <div class="form-group">
                 <label for="Picture" class="form-label">Picture URL:</label>
-                <input type="text" id="Picture" name="Picture" class="form-input" value="<?php echo htmlspecialchars($product['Picture'] ?? ''); ?>">
+                <input type="text" id="Picture" name="Picture" class="form-input" value="<?php echo htmlspecialchars($product['Picture'] ?? $old['Picture'] ?? ''); ?>">
+
+                <!-- แสดง Error message ถ้ามี -->
+                 <?php if (!empty($errors['Picture'])): ?>
+                    <div class="error-message"><?php echo htmlspecialchars($errors['Picture']); ?></div>
+                 <?php endif; ?>
             </div>
 
             <div class="form-group">
                 <label for="Category" class="form-label">Category:</label>
-                <input type="text" id="Category" name="Category" class="form-input" value="<?php echo htmlspecialchars($product['Category'] ?? ''); ?>">
+                <input type="text" id="Category" name="Category" class="form-input" value="<?php echo htmlspecialchars($product['Category'] ?? $old['Category'] ?? ''); ?>">
+
+                <!-- แสดง Error message ถ้ามี -->
+                 <?php if (!empty($errors['Category'])): ?>
+                    <div class="error-message"><?php echo htmlspecialchars($errors['Category']); ?></div>
+                 <?php endif; ?>
             </div>
 
             <div class="form-group">
                 <label for="ProductDescription" class="form-label">Product Description:</label>
-                <textarea id="ProductDescription" name="ProductDescription" class="form-textarea"><?php echo htmlspecialchars($product['ProductDescription'] ?? ''); ?></textarea>
+                <textarea id="ProductDescription" name="ProductDescription" class="form-textarea"><?php echo htmlspecialchars($product['ProductDescription'] ?? $old['ProductDescription'] ?? ''); ?></textarea>
+
+                <!-- แสดง Error message ถ้ามี -->
+                 <?php if (!empty($errors['ProductDescription'])): ?>
+                    <div class="error-message"><?php echo htmlspecialchars($errors['ProductDescription']); ?></div>
+                 <?php endif; ?>
             </div>
 
             <div class="form-group">
                 <label for="Price" class="form-label">Price:</label>
-                <input type="number" id="Price" step="0.01" name="Price" class="form-input" value="<?php echo htmlspecialchars($product['Price'] ?? ''); ?>" required>
+                <input type="number" id="Price" step="0.01" name="Price" class="form-input" value="<?php echo htmlspecialchars($product['Price'] ?? $old['Price'] ?? ''); ?>" required>
+
+                <!-- แสดง Error message ถ้ามี -->
+                 <?php if (!empty($errors['Price'])): ?>
+                    <div class="error-message"><?php echo htmlspecialchars($errors['Price']); ?></div>
+                 <?php endif; ?>
             </div>
 
             <div class="form-group">
                 <label for="QuantityStock" class="form-label">Quantity:</label>
-                <input type="number" id="QuantityStock" step="1" name="QuantityStock" class="form-input" value="<?php echo htmlspecialchars($product['QuantityStock'] ?? ''); ?>" required>
-            </div>
+                <input type="number" id="QuantityStock" step="1" name="QuantityStock" class="form-input" value="<?php echo htmlspecialchars($product['QuantityStock'] ?? $old['QuantityStock'] ?? ''); ?>" required>
 
+                <!-- แสดง Error message ถ้ามี -->
+                 <?php if (!empty($errors['QuantityStock'])): ?>
+                    <div class="error-message"><?php echo htmlspecialchars($errors['QuantityStock']); ?></div>
+                 <?php endif; ?>
+            </div>
+               
             <div class="form-actions">
+                 <!-- delete -->
+                <?php
+                    if ($product != null) {
+                        echo '<a href="product_delete.php?id=' . htmlspecialchars($product['ProductID']) . '" class="formDelete" onclick="return confirm(\'Are you sure you want to delete this product?\')">Delete</a>';
+                    }
+                ?>
+                 <!-- save -->
                 <button type="submit" class="form-submit">Save</button>
+                    <!-- cancel -->
                 <a href="index.php" class="form-cancel">Cancel</a>
             </div>
         </form>

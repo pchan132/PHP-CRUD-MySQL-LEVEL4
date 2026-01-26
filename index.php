@@ -8,11 +8,11 @@
     $sql = "SELECT * FROM products";
 
     if ($keyword != ''){
-        $sql .= " WHERE ProductName LIKE ?";
+        $sql .= " WHERE ProductName LIKE ? or Category LIKE ?";
 
         $stmt = $conn->prepare($sql);
         $searchTerm = "%$keyword%";
-        $stmt->bind_param("s", $searchTerm);
+        $stmt->bind_param("ss", $searchTerm, $searchTerm);
         $stmt->execute();
         $result = $stmt->get_result();
     } else {
@@ -35,9 +35,17 @@
 </head>
 <body>
     <div class="container grey-bg rounded">
-        <h1>Product</h1>
+        <div>
+            <div>
+                <h1>Product</h1>
+            </div>
+            <div>
+                <a href="customer.php">Customer</a>
+            </div>
+        </div>
+        
         <!-- ค้นหาสินค้า -->
-        <div class="flex">
+        <div class="flex margin-top-20">
             <form method="GET" action="index.php">
                 <input type="text" name="keyword" value="<?php echo htmlspecialchars($keyword); ?>" placeholder="Search products..." class="input-field">
                 <button type="submit" class="button-primary">Search</button>
