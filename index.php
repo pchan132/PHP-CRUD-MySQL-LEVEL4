@@ -51,6 +51,8 @@
         <div class="flex margin-top-20">
             <form method="GET" action="index.php">
                 <input type="text" name="keyword" value="<?php echo htmlspecialchars($keyword); ?>" placeholder="Search products..." class="input-field">
+
+                <!-- ปุ่มค้นหา -->
                 <button type="submit" class="button-primary">Search</button>
                 <!-- ปุ่มรีเซ็ตเพื่อเคลียร์คำค้นหา -->
                 <button type="button"  class="button-reset" onclick="window.location.href='index.php'">Reset</button>
