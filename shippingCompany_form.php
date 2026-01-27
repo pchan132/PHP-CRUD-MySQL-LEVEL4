@@ -40,8 +40,10 @@
     <div class="form-container">
         <h1 class="form-title">
         <?php echo $shippingCompany ? "Edit Shipping Company" : "Add Shipping Company"; ?></h1>
-
         <form class="product-form" method="POST" action="shippingCompany_save.php">
+
+        <!-- input ของ id -->
+            <input type="hidden" name="ShippingCompanyID" value="<?php echo htmlspecialchars($shippingCompany['ShippingCompanyID'] ?? $old['ShippingCompanyID'] ?? ''); ?>">
 
         <!-- input ของชื่อบริษัท -->
             <div class="form-group">
@@ -65,17 +67,44 @@
                 <?php endif; ?>
             </div>
 
-            <!-- input ของเบอร์โทรศัพท์ -->
+            <!-- input ของเมือง -->
             <div class="form-group">
-                <label for="Phone">Phone:</label>
-                <input type="text" id="Phone" name="Phone" value="<?php echo htmlspecialchars($shippingCompany['Phone'] ?? $old['Phone'] ?? ''); ?>" class="form-input" required>
+                <label for="City">City:</label>
+                <input type="text" id="City" name="City" value="<?php echo htmlspecialchars($shippingCompany['City'] ?? $old['City'] ?? ''); ?>" class="form-input" required>
 
                 <!-- แสดงข้อความ error ถ้ามี -->
-                <?php if (isset($errors['Phone'])): ?>
-                    <div class="error-message"><?php echo htmlspecialchars($errors['Phone']); ?></div>
+                <?php if (isset($errors['City'])): ?>
+                    <div class="error-message"><?php echo htmlspecialchars($errors['City']); ?></div>
                 <?php endif; ?>
             </div>
-                    
+
+            <!-- input ของประเทศ -->
+            <div class="form-group">
+                <label for="Country">Country:</label>
+                <input type="text" id="Country" name="Country" value="<?php echo htmlspecialchars($shippingCompany['Country'] ?? $old['Country'] ?? ''); ?>" class="form-input" required>
+
+                <!-- แสดงข้อความ error ถ้ามี -->
+                <?php if (isset($errors['Country'])): ?>
+                    <div class="error-message"><?php echo htmlspecialchars($errors['Country']); ?></div>
+                <?php endif; ?>
+            </div>
+            
+            <!-- save button -->
+            <div class="form-actions">
+                <!-- delete -->
+                <?php
+                    if ($shippingCompany != null) {
+                        echo '<a href="shippingCompany_delete.php?id=' . htmlspecialchars($shippingCompany['ShippingCompanyID']) . '" class="formDelete" onclick="return confirm(\'Are you sure you want to delete this shipping company?\')">Delete</a>';
+                    }
+                ?>
+                <button type="submit" class="form-submit">
+                    Save
+                </button>
+
+                <button type="button" class="form-cancel" onclick="window.location.href='shippingCompanies.php'">
+                    Cancel
+                </button>
+            </div>
         </form>
     </div>
 </body>
