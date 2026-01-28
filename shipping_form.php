@@ -41,24 +41,25 @@ function val($key, $old, $data) {
         
         <div class="form-group">
             <label>Company Name: *</label>
-            <input type="text" name="CompanyName" value="<?= val('CompanyName', $old, $data) ?>" maxlength="50">
+            <input type="text" name="CompanyName" value="<?= val('CompanyName', $old, $data) ?>">
             <?php if (!empty($err['CompanyName'])): ?><div class="error"><?= $err['CompanyName'] ?></div><?php endif; ?>
         </div>
         
         <div class="form-group">
             <label>Address: *</label>
-            <input type="text" name="Address" value="<?= val('Address', $old, $data) ?>" maxlength="50">
+            <input type="text" name="Address" value="<?= val('Address', $old, $data) ?>">
             <?php if (!empty($err['Address'])): ?><div class="error"><?= $err['Address'] ?></div><?php endif; ?>
         </div>
         
         <div class="form-group">
             <label>City:</label>
-            <input type="text" name="City" value="<?= val('City', $old, $data) ?>" maxlength="50">
+            <input type="text" name="City" value="<?= val('City', $old, $data) ?>">
+            <?php if (!empty($err['City'])): ?><div class="error"><?= $err['City'] ?></div><?php endif; ?>
         </div>
         
         <div class="form-group">
             <label>Country: *</label>
-            <input type="text" name="Country" value="<?= val('Country', $old, $data) ?>" maxlength="50">
+            <input type="text" name="Country" value="<?= val('Country', $old, $data) ?>">
             <?php if (!empty($err['Country'])): ?><div class="error"><?= $err['Country'] ?></div><?php endif; ?>
         </div>
         

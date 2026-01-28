@@ -41,25 +41,26 @@ function val($key, $old, $data) {
         
         <div class="form-group">
             <label>Product Name: *</label>
-            <input type="text" name="ProductName" value="<?= val('ProductName', $old, $data) ?>" maxlength="50">
+            <input type="text" name="ProductName" value="<?= val('ProductName', $old, $data) ?>">
             <?php if (!empty($err['ProductName'])): ?><div class="error"><?= $err['ProductName'] ?></div><?php endif; ?>
         </div>
         
         <div class="form-group">
             <label>Picture URL: *</label>
-            <input type="text" name="Picture" value="<?= val('Picture', $old, $data) ?>" maxlength="100">
+            <input type="text" name="Picture" value="<?= val('Picture', $old, $data) ?>">
             <?php if (!empty($err['Picture'])): ?><div class="error"><?= $err['Picture'] ?></div><?php endif; ?>
         </div>
         
         <div class="form-group">
             <label>Category: *</label>
-            <input type="text" name="Category" value="<?= val('Category', $old, $data) ?>" maxlength="50">
+            <input type="text" name="Category" value="<?= val('Category', $old, $data) ?>">
             <?php if (!empty($err['Category'])): ?><div class="error"><?= $err['Category'] ?></div><?php endif; ?>
         </div>
         
         <div class="form-group">
             <label>Product Description:</label>
-            <textarea name="ProductDescription" maxlength="250"><?= val('ProductDescription', $old, $data) ?></textarea>
+            <textarea name="ProductDescription"><?= val('ProductDescription', $old, $data) ?></textarea>
+            <?php if (!empty($err['ProductDescription'])): ?><div class="error"><?= $err['ProductDescription'] ?></div><?php endif; ?>
         </div>
         
         <div class="form-group">

@@ -11,13 +11,15 @@ $country = trim($_POST['Country'] ?? '');
 // Validate
 $err = [];
 if ($name == '') $err['CompanyName'] = "Company Name is required";
-elseif (strlen($name) > 50) $err['CompanyName'] = "Max 50 characters";
+elseif (mb_strlen($name) > 50) $err['CompanyName'] = "ต้องไม่เกิน 50 ตัวอักษร (ขณะนี้ " . mb_strlen($name) . " ตัว)";
 
 if ($addr == '') $err['Address'] = "Address is required";
-elseif (strlen($addr) > 50) $err['Address'] = "Max 50 characters";
+elseif (mb_strlen($addr) > 50) $err['Address'] = "ต้องไม่เกิน 50 ตัวอักษร (ขณะนี้ " . mb_strlen($addr) . " ตัว)";
+
+if (mb_strlen($city) > 50) $err['City'] = "ต้องไม่เกิน 50 ตัวอักษร (ขณะนี้ " . mb_strlen($city) . " ตัว)";
 
 if ($country == '') $err['Country'] = "Country is required";
-elseif (strlen($country) > 50) $err['Country'] = "Max 50 characters";
+elseif (mb_strlen($country) > 50) $err['Country'] = "ต้องไม่เกิน 50 ตัวอักษร (ขณะนี้ " . mb_strlen($country) . " ตัว)";
 
 // Error -> back to form
 if (!empty($err)) {

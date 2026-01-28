@@ -13,13 +13,15 @@ $stock = $_POST['QuantityStock'] ?? '';
 // Validate
 $err = [];
 if ($name == '') $err['ProductName'] = "Product Name is required";
-elseif (strlen($name) > 50) $err['ProductName'] = "Max 50 characters";
+elseif (mb_strlen($name) > 50) $err['ProductName'] = "ต้องไม่เกิน 50 ตัวอักษร (ขณะนี้ " . mb_strlen($name) . " ตัว)";
 
 if ($pic == '') $err['Picture'] = "Picture URL is required";
-elseif (strlen($pic) > 100) $err['Picture'] = "Max 100 characters";
+elseif (mb_strlen($pic) > 100) $err['Picture'] = "ต้องไม่เกิน 100 ตัวอักษร (ขณะนี้ " . mb_strlen($pic) . " ตัว)";
 
 if ($cat == '') $err['Category'] = "Category is required";
-elseif (strlen($cat) > 50) $err['Category'] = "Max 50 characters";
+elseif (mb_strlen($cat) > 50) $err['Category'] = "ต้องไม่เกิน 50 ตัวอักษร (ขณะนี้ " . mb_strlen($cat) . " ตัว)";
+
+if (mb_strlen($desc) > 250) $err['ProductDescription'] = "ต้องไม่เกิน 250 ตัวอักษร (ขณะนี้ " . mb_strlen($desc) . " ตัว)";
 
 if ($price === '' || !is_numeric($price)) $err['Price'] = "Price is required (number)";
 elseif ($price < 0 || $price > 9999) $err['Price'] = "Price must be 0-9999";

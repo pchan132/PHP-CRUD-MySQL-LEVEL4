@@ -41,36 +41,37 @@ function val($key, $old, $data) {
         
         <div class="form-group">
             <label>Customer Name: *</label>
-            <input type="text" name="CustomerName" value="<?= val('CustomerName', $old, $data) ?>" maxlength="50">
+            <input type="text" name="CustomerName" value="<?= val('CustomerName', $old, $data) ?>">
             <?php if (!empty($err['CustomerName'])): ?><div class="error"><?= $err['CustomerName'] ?></div><?php endif; ?>
         </div>
         
         <div class="form-group">
             <label>Address: *</label>
-            <input type="text" name="AddressLine1" value="<?= val('AddressLine1', $old, $data) ?>" maxlength="50">
+            <input type="text" name="AddressLine1" value="<?= val('AddressLine1', $old, $data) ?>">
             <?php if (!empty($err['AddressLine1'])): ?><div class="error"><?= $err['AddressLine1'] ?></div><?php endif; ?>
         </div>
         
         <div class="form-group">
             <label>City:</label>
-            <input type="text" name="City" value="<?= val('City', $old, $data) ?>" maxlength="50">
+            <input type="text" name="City" value="<?= val('City', $old, $data) ?>">
+            <?php if (!empty($err['City'])): ?><div class="error"><?= $err['City'] ?></div><?php endif; ?>
         </div>
         
         <div class="form-group">
             <label>Country: *</label>
-            <input type="text" name="Country" value="<?= val('Country', $old, $data) ?>" maxlength="50">
+            <input type="text" name="Country" value="<?= val('Country', $old, $data) ?>">
             <?php if (!empty($err['Country'])): ?><div class="error"><?= $err['Country'] ?></div><?php endif; ?>
         </div>
         
         <div class="form-group">
             <label>Postal Code: * (5 digits)</label>
-            <input type="text" name="PostalCode" value="<?= val('PostalCode', $old, $data) ?>" maxlength="5">
+            <input type="text" name="PostalCode" value="<?= val('PostalCode', $old, $data) ?>">
             <?php if (!empty($err['PostalCode'])): ?><div class="error"><?= $err['PostalCode'] ?></div><?php endif; ?>
         </div>
         
         <div class="form-group">
             <label>Mobile Phone: * (format: 0XX-XXX-XXXX)</label>
-            <input type="text" name="MobilePhone" value="<?= val('MobilePhone', $old, $data) ?>" maxlength="12" placeholder="081-234-5678">
+            <input type="text" name="MobilePhone" value="<?= val('MobilePhone', $old, $data) ?>" placeholder="081-234-5678">
             <?php if (!empty($err['MobilePhone'])): ?><div class="error"><?= $err['MobilePhone'] ?></div><?php endif; ?>
         </div>
         
