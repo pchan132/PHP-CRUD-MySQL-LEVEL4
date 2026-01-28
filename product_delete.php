@@ -1,6 +1,8 @@
 <?php
 include 'db.php';
-$id = $_GET['id'];
-$conn->query("DELETE FROM products WHERE ProductID=$id");
-header("location:index.php");
-exit();
+$id = $_GET['id'] ?? 0;
+$stmt = $conn->prepare("DELETE FROM Products WHERE ProductID = ?");
+$stmt->bind_param("i", $id);
+$stmt->execute();
+header("Location: products.php");
+?>
