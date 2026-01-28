@@ -1,96 +1,49 @@
 <?php
-    session_start(); // เริ่ม session เพื่อเก็บ error messages
-    include 'db.php';
-    include 'validate.php';
+session_start();
+include 'db.php';
 
-    $ProductID = $_POST['ProductID'] ?? '';
-    $ProductName = $_POST['ProductName'] ?? '';
-    $Picture = $_POST['Picture'] ?? '';
-    $Category = $_POST['Category'] ?? '';
-    $ProductDescription = $_POST['ProductDescription'] ?? '';
-    $Price = $_POST['Price'] ?? 0;
-    $QuantityStock = $_POST['QuantityStock'] ?? 0;
+$id = $_POST['ProductID'] ?? '';
+$name = trim($_POST['ProductName'] ?? '');
+$pic = trim($_POST['Picture'] ?? '');
+$cat = trim($_POST['Category'] ?? '');
+$desc = trim($_POST['ProductDescription'] ?? '');
+$price = $_POST['Price'] ?? '';
+$stock = $_POST['QuantityStock'] ?? '';
 
-    // เก็บ Error messages
-    $ProductNameErr=$productNameErr=$PictureErr=$CategoryErr=$ProductDescriptionErr=$PriceErr=$QuantityStockErr="";
+// Validate
+$err = [];
+if ($name == '') $err['ProductName'] = "Product Name is required";
+elseif (strlen($name) > 50) $err['ProductName'] = "Max 50 characters";
 
-    // ตรวจสอบข้อมูลที่ส่งมา
-    // ตรวจสอบชื่อสินค้า
-    if (!req($ProductName)) {
-        $ProductNameErr = "ต้องระบุชื่อสินค้า";
-    } elseif (!str_len($ProductName, 50)) {
-        $ProductNameErr = "ชื่อต้องไม่เกิน 50 ตัวอักษร";
-    }
+if ($pic == '') $err['Picture'] = "Picture URL is required";
+elseif (strlen($pic) > 100) $err['Picture'] = "Max 100 characters";
 
-    // ตรวจสอบ URL ของรูปภาพ
-    if (!req($Picture)) {
-        $PictureErr = "ต้องระบุ URL ของรูปภาพ";
-    } elseif (!url($Picture) || !str_len($Picture, 100)) {
-        $PictureErr = "รูปแบบ URL ของรูปภาพไม่ถูกต้อง หรือยาวเกิน 100 ตัวอักษร";
-    }
+if ($cat == '') $err['Category'] = "Category is required";
+elseif (strlen($cat) > 50) $err['Category'] = "Max 50 characters";
 
-    // ตรวจสอบหมวดหมู่
-    if (!req($Category)) {
-        $CategoryErr = "ต้องระบุหมวดหมู่";
-    } elseif (!str_len($Category, 50)) {
-        $CategoryErr = "หมวดหมู่ต้องไม่เกิน 50 ตัวอักษร";
-    }
+if ($price === '' || !is_numeric($price)) $err['Price'] = "Price is required (number)";
+elseif ($price < 0 || $price > 9999) $err['Price'] = "Price must be 0-9999";
 
-    // ตรวจสอบคำอธิบายสินค้า
-    if (!str_len($ProductDescription, 250)) {
-        $ProductDescriptionErr = "คำอธิบายสินค้าต้องไม่เกิน 250 ตัวอักษร";
-    }
+if ($stock === '' || !is_numeric($stock)) $err['QuantityStock'] = "Stock is required (number)";
+elseif ($stock < 0 || $stock > 999) $err['QuantityStock'] = "Stock must be 0-999";
 
-    // ตรวจสอบราคา
-    if (!req($Price)) {
-        $PriceErr = "ต้องระบุราคา";
-    } elseif (!num($Price, 4)) {
-        $PriceErr = "ราคาต้องเป็นตัวเลขและไม่เกิน 4 หลัก";
-    }
+// Error -> back to form
+if (!empty($err)) {
+    $_SESSION['err'] = $err;
+    $_SESSION['old'] = $_POST;
+    header("Location: product_form.php" . ($id ? "?id=$id" : ""));
+    exit;
+}
 
-    // ตรวจสอบจำนวนในสต็อก
-    if (!req($QuantityStock)) {
-        $QuantityStockErr = "ต้องระบุจำนวนในสต็อก";
-    } elseif (!num($QuantityStock, 3)) {
-        $QuantityStockErr = "จำนวนในสต็อกต้องเป็นตัวเลขและไม่เกิน 3 หลัก";
-    }
+// Save
+if ($id != '') {
+    $stmt = $conn->prepare("UPDATE Products SET ProductName=?, Picture=?, Category=?, ProductDescription=?, Price=?, QuantityStock=? WHERE ProductID=?");
+    $stmt->bind_param("ssssiis", $name, $pic, $cat, $desc, $price, $stock, $id);
+} else {
+    $stmt = $conn->prepare("INSERT INTO Products (ProductName, Picture, Category, ProductDescription, Price, QuantityStock) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssssii", $name, $pic, $cat, $desc, $price, $stock);
+}
+$stmt->execute();
 
-    // ถ้ามีข้อผิดพลาดใด ๆ ให้แสดงผลลัพธ์และหยุดการทำงาน
-    if ($ProductNameErr || $PictureErr || $CategoryErr || $ProductDescriptionErr || $PriceErr || $QuantityStockErr) {
-        
-        // เก็บข้อผิดพลาดไว้ใน session
-        $_SESSION['errors'] = [
-            'ProductName' => $ProductNameErr,
-            'Picture' => $PictureErr,
-            'Category' => $CategoryErr,
-            'ProductDescription' => $ProductDescriptionErr,
-            'Price' => $PriceErr,
-            'QuantityStock' => $QuantityStockErr
-        ];
-
-        // เก็บข้อมูลเดิมไว้ใน session
-        $_SESSION['old'] = $_POST;
-
-        header("Location: product_form.php" . ($ProductID ? "?id=$ProductID" : ""));
-
-        exit();
-    }
-
-    // ถ้าไม่มีข้อผิดพลาด ให้บันทึกข้อมูลลงฐานข้อมูล
-    if ($ProductID != '') {
-        // อัปเดตข้อมูลสินค้า
-        $stmt = $conn->prepare("UPDATE products SET ProductName=?, Picture=?, Category=?, ProductDescription=?, Price=?, QuantityStock=? WHERE ProductID=?");
-        $stmt->bind_param("ssssdii", $ProductName, $Picture, $Category, $ProductDescription, $Price, $QuantityStock, $ProductID);
-    } else {
-        // เพิ่มสินค้ารายการใหม่
-        $stmt = $conn->prepare("INSERT INTO products (ProductName, Picture, Category, ProductDescription, Price, QuantityStock) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssssdi", $ProductName, $Picture, $Category, $ProductDescription, $Price, $QuantityStock);
-    }
-    // ดำเนินการรันคำสั่ง SQL
-    $stmt->execute();
-    $stmt->close(); // ปิดคำสั่งที่เตรียมไว้
-    $conn->close(); // ปิดการเชื่อมต่อฐานข้อมูล
-
-    // เปลี่ยนเส้นทางกลับไปยังหน้ารายการสินค้า
-    header("Location: index.php");
+header("Location: products.php");
 ?>

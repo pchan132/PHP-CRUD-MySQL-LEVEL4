@@ -1,139 +1,87 @@
 <?php
-    session_start(); // เริ่ม session เพื่อรับค่า error messages
+session_start();
+include 'db.php';
 
-    include 'db.php';
+$err = $_SESSION['err'] ?? [];
+$old = $_SESSION['old'] ?? [];
+unset($_SESSION['err'], $_SESSION['old']);
 
-    // เก็บ Error messages
-    $errors = $_SESSION['errors'] ?? [];
-    // เก็บค่าที่ผู้ใช้กรอกไว้ก่อนหน้า
-    $old = $_SESSION['old'] ?? [];
-    // ล้างค่า error messages และ old data หลังจากดึงมาใช้แล้ว
-    unset($_SESSION['errors'], $_SESSION['old']);
+$id = $_GET['id'] ?? '';
+$data = null;
 
-    // ดึงข้อมูลสินค้าจากฐานข้อมูลถ้ามีการส่ง id มาหา ผ่าน URL
-    $id = $_GET['id'] ?? '';
-    $product = null; // ตัวแปรเก็บข้อมูลสินค้า
+if ($id != '') {
+    $stmt = $conn->prepare("SELECT * FROM Products WHERE ProductID = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $data = $stmt->get_result()->fetch_assoc();
+}
 
-    // ตรวจสอบว่ามีการส่ง id มาหรือไม่
-    if ($id != ''){
-        $sql = "SELECT * FROM products WHERE ProductID = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-
-        // get_result คือ ฟังก์ชันที่ใช้ดึงผลลัพธ์จากการรันคำสั่งที่เตรียมไว้ ทำงานโดยการคืนค่าเป็นวัตถุผลลัพธ์ (result object)
-        $result = $stmt->get_result();
-
-        // fetch_assoc() คือ ฟังก์ชันที่ใช้ดึงแถวข้อมูลถัดไปจากชุดผลลัพธ์ที่ได้มา และคืนค่าเป็นอาร์เรย์แบบเชื่อมโยง (associative array)
-        $product = $result->fetch_assoc();
-    }
-
-    // แสดงข้อมูลสินค้า (สำหรับตรวจสอบ) ตาม id ที่ส่งมา
-    // echo '<pre>';
-    // print_r($product);
-
+function val($key, $old, $data) {
+    return htmlspecialchars($old[$key] ?? $data[$key] ?? '');
+}
 ?>
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style_form.css">
-    <title>
-        <?php
-            echo ($product != null) ? "Edit Product" : "Create a new Product";
-        ?>
-    </title>
+    <title><?= $data ? 'Edit' : 'New' ?> Product</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="form-body">
-    <div class="form-container">
-        <h1 class="form-title">
-            <?php
-            // เปลี่ยนหัวข้อฟอร์มตามสถานะการแก้ไขหรือสร้างใหม่
-            // ถ้ามีข้อมูลสินค้า (แก้ไข) ให้แสดง "Edit Product" ถ้าไม่มี (สร้างใหม่) ให้แสดง "Create a new Product"
-                echo ($product != null) ? "Edit Product" : "Create a new Product";
-            ?>
-        </h1>
-
-        <form class="product-form" method="POST" action="product_save.php">
-            <input type="hidden" name="ProductID" value="<?php echo htmlspecialchars($product['ProductID'] ?? $old['ProductID'] ?? ''); ?>">
-
-            <!-- Product Name -->
-            <div class="form-group">
-                <label for="ProductName" class="form-label">Product Name:</label>
-                <input type="text" id="ProductName" name="ProductName" class="form-input" value="<?php echo htmlspecialchars($old['ProductName'] ?? $product['ProductName'] ?? ''); ?>" required>
-
-                <!-- แสดง Error message ถ้ามี -->
-                 <?php if (!empty($errors['ProductName'])): ?>
-                    <div class="error-message"><?php echo htmlspecialchars($errors['ProductName']); ?></div>
-                 <?php endif; ?>
-            </div>
-
-            <!-- Picture URL -->
-            <div class="form-group">
-                <label for="Picture" class="form-label">Picture URL:</label>
-                <input type="text" id="Picture" name="Picture" class="form-input" value="<?php echo htmlspecialchars($old['Picture'] ?? $product['Picture'] ?? ''); ?>">
-
-                <!-- แสดง Error message ถ้ามี -->
-                 <?php if (!empty($errors['Picture'])): ?>
-                    <div class="error-message"><?php echo htmlspecialchars($errors['Picture']); ?></div>
-                 <?php endif; ?>
-            </div>
-
-            <div class="form-group">
-                <label for="Category" class="form-label">Category:</label>
-                <input type="text" id="Category" name="Category" class="form-input" value="<?php echo htmlspecialchars($old['Category'] ?? $product['Category'] ?? ''); ?>">
-
-                <!-- แสดง Error message ถ้ามี -->
-                 <?php if (!empty($errors['Category'])): ?>
-                    <div class="error-message"><?php echo htmlspecialchars($errors['Category']); ?></div>
-                 <?php endif; ?>
-            </div>
-
-            <div class="form-group">
-                <label for="ProductDescription" class="form-label">Product Description:</label>
-                <textarea id="ProductDescription" name="ProductDescription" class="form-textarea"><?php echo htmlspecialchars($old['ProductDescription'] ?? $product['ProductDescription'] ?? ''); ?></textarea>
-
-                <!-- แสดง Error message ถ้ามี -->
-                 <?php if (!empty($errors['ProductDescription'])): ?>
-                    <div class="error-message"><?php echo htmlspecialchars($errors['ProductDescription']); ?></div>
-                 <?php endif; ?>
-            </div>
-
-            <div class="form-group">
-                <label for="Price" class="form-label">Price:</label>
-                <input type="number" id="Price" step="0.01" name="Price" class="form-input" value="<?php echo htmlspecialchars($old['Price'] ?? $product['Price'] ?? ''); ?>" required>
-
-                <!-- แสดง Error message ถ้ามี -->
-                 <?php if (!empty($errors['Price'])): ?>
-                    <div class="error-message"><?php echo htmlspecialchars($errors['Price']); ?></div>
-                 <?php endif; ?>
-            </div>
-
-            <div class="form-group">
-                <label for="QuantityStock" class="form-label">Quantity:</label>
-                <input type="number" id="QuantityStock" step="1" name="QuantityStock" class="form-input" value="<?php echo htmlspecialchars($old['QuantityStock'] ?? $product['QuantityStock'] ?? ''); ?>" required>
-
-                <!-- แสดง Error message ถ้ามี -->
-                 <?php if (!empty($errors['QuantityStock'])): ?>
-                    <div class="error-message"><?php echo htmlspecialchars($errors['QuantityStock']); ?></div>
-                 <?php endif; ?>
-            </div>
-               
-            <div class="form-actions">
-                <!-- delete -->
-                <?php
-                    if ($product != null) {
-                        echo '<a href="product_delete.php?id=' . htmlspecialchars($product['ProductID']) . '" class="formDelete" onclick="return confirm(\'Are you sure you want to delete this product?\')">Delete</a>';
-                    }
-                ?>
-                 <!-- save -->
-                <button type="submit" class="form-submit">Save</button>
-                    <!-- cancel -->
-                <a href="index.php" class="form-cancel">Cancel</a>
-            </div>
-        </form>
-    </div>
+<body>
+<div class="container">
+    <nav>
+        <a href="products.php">Products</a>
+        <a href="customers.php">Customers</a>
+        <a href="shipping.php">Shipping Companies</a>
+        <a href="orders.php">Orders</a>
+    </nav>
+    <h1><?= $data ? 'Edit Product' : 'New Product' ?></h1>
+    
+    <form method="POST" action="product_save.php">
+        <input type="hidden" name="ProductID" value="<?= val('ProductID', $old, $data) ?>">
+        
+        <div class="form-group">
+            <label>Product Name: *</label>
+            <input type="text" name="ProductName" value="<?= val('ProductName', $old, $data) ?>" maxlength="50">
+            <?php if (!empty($err['ProductName'])): ?><div class="error"><?= $err['ProductName'] ?></div><?php endif; ?>
+        </div>
+        
+        <div class="form-group">
+            <label>Picture URL: *</label>
+            <input type="text" name="Picture" value="<?= val('Picture', $old, $data) ?>" maxlength="100">
+            <?php if (!empty($err['Picture'])): ?><div class="error"><?= $err['Picture'] ?></div><?php endif; ?>
+        </div>
+        
+        <div class="form-group">
+            <label>Category: *</label>
+            <input type="text" name="Category" value="<?= val('Category', $old, $data) ?>" maxlength="50">
+            <?php if (!empty($err['Category'])): ?><div class="error"><?= $err['Category'] ?></div><?php endif; ?>
+        </div>
+        
+        <div class="form-group">
+            <label>Product Description:</label>
+            <textarea name="ProductDescription" maxlength="250"><?= val('ProductDescription', $old, $data) ?></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label>Price: * (max 4 digits)</label>
+            <input type="number" name="Price" value="<?= val('Price', $old, $data) ?>" min="0" max="9999">
+            <?php if (!empty($err['Price'])): ?><div class="error"><?= $err['Price'] ?></div><?php endif; ?>
+        </div>
+        
+        <div class="form-group">
+            <label>Quantity Stock: * (max 3 digits)</label>
+            <input type="number" name="QuantityStock" value="<?= val('QuantityStock', $old, $data) ?>" min="0" max="999">
+            <?php if (!empty($err['QuantityStock'])): ?><div class="error"><?= $err['QuantityStock'] ?></div><?php endif; ?>
+        </div>
+        
+        <div>
+            <button type="submit" class="btn btn-add">Save</button>
+            <a href="products.php" class="btn btn-cancel">Cancel</a>
+            <?php if ($data): ?>
+                <a href="product_delete.php?id=<?= $data['ProductID'] ?>" class="btn btn-delete" onclick="return confirm('Delete this product?')">Delete</a>
+            <?php endif; ?>
+        </div>
+    </form>
+</div>
 </body>
 </html>

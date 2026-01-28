@@ -1,88 +1,49 @@
-<?php 
-    session_start(); // เริ่ม session เพื่อเก็บ error messages
-    include 'db.php';
-    include 'validate.php';
-    
-    $CustomerID = $_POST['CustomerID'] ?? '';
-    $CustomerName = $_POST['CustomerName'] ?? '';
-    $AddressLine1 = $_POST['AddressLine1'] ?? '';
-    $City = $_POST['City'] ?? '';
-    $Country = $_POST['Country'] ?? '';
-    $PostalCode = $_POST['PostalCode'] ?? '';
-    $MobilePhone = $_POST['MobilePhone'] ?? '';
-    
-    // เก็บ Error messages
-    $CustomerNameErr=$AddressLine1Err=$CityErr=$CountryErr=$PostalCodeErr=$MobilePhoneErr="";
+<?php
+session_start();
+include 'db.php';
 
-    // ตรวจสอบข้อมูลที่ส่งมา
-    // ตรวจสอบชื่อ customer
-    if (!req($CustomerName)) {
-        $CustomerNameErr = "ต้องระบุชื่อ customer";
-    } elseif (!str_len($CustomerName, 50)) {
-        $CustomerNameErr = "ชื่อต้องไม่เกิน 50 ตัวอักษร";
-    }
-    // ตรวจสอบที่อยู่
-    if (!req($AddressLine1)) {
-        $AddressLine1Err = "ต้องระบุที่อยู่";
-    } elseif (!str_len($AddressLine1, 50)) {
-        $AddressLine1Err = "ที่อยู่ต้องไม่เกิน 50 ตัวอักษร";
-    }
-    // ตรวจสอบเมือง
-    if (!str_len($City, 50)) {
-        $CityErr = "เมืองต้องไม่เกิน 50 ตัวอักษร";
-    }
+$id = $_POST['CustomerID'] ?? '';
+$name = trim($_POST['CustomerName'] ?? '');
+$addr = trim($_POST['AddressLine1'] ?? '');
+$city = trim($_POST['City'] ?? '');
+$country = trim($_POST['Country'] ?? '');
+$postal = trim($_POST['PostalCode'] ?? '');
+$phone = trim($_POST['MobilePhone'] ?? '');
 
-    // ตรวจสอบประเทศ
-    if (!req($Country)) {
-        $CountryErr = "ต้องระบุประเทศ";
-    } elseif (!str_len($Country, 50)) {
-        $CountryErr = "ประเทศต้องไม่เกิน 50 ตัวอักษร";
-    }
-    // ตรวจสอบรหัสไปรษณีย์
-    if (!req($PostalCode)) {
-        $PostalCodeErr = "ต้องระบุรหัสไปรษณีย์";
-    } elseif (!str_len($PostalCode, 5)) {
-        $PostalCodeErr = "รหัสไปรษณีย์ต้องไม่เกิน 5 ตัวอักษร";
-    }
-    // ตรวจสอบเบอร์โทรศัพท์มือถือ
-    if (!req($MobilePhone)) {
-        $MobilePhoneErr = "ต้องระบุเบอร์โทรศัพท์มือถือ";
-    } elseif (!str_len($MobilePhone, 12)) {
-        $MobilePhoneErr = "เบอร์โทรศัพท์มือถือไม่เกิน 12 ตัวอักษร";
-    }
+// Validate
+$err = [];
+if ($name == '') $err['CustomerName'] = "Customer Name is required";
+elseif (strlen($name) > 50) $err['CustomerName'] = "Max 50 characters";
 
-    // ถ้ามีข้อผิดพลาดใด ๆ ให้แสดงผลลัพธ์และหยุดการทำงาน
-    if ($CustomerNameErr || $AddressLine1Err || $CityErr || $CountryErr || $PostalCodeErr || $MobilePhoneErr) {
-        // เก็บข้อผิดพลาดใน session
-        $_SESSION['errors'] = [
-            'CustomerName' => $CustomerNameErr,
-            'AddressLine1' => $AddressLine1Err,
-            'City' => $CityErr,
-            'Country' => $CountryErr,
-            'PostalCode' => $PostalCodeErr,
-            'MobilePhone' => $MobilePhoneErr
-        ];
-        // เก็บข้อมูลเก่าใน session
-        $_SESSION['old'] = $_POST;
-        // ส่งกลับไปยังฟอร์ม
-        header("Location: customer_form.php" . ($CustomerID ? "?id=$CustomerID" : ""));
-        exit();
-    }
+if ($addr == '') $err['AddressLine1'] = "Address is required";
+elseif (strlen($addr) > 50) $err['AddressLine1'] = "Max 50 characters";
 
-    // ถ้าไม่มีข้อผิดพลาด ให้บันทึกข้อมูลลงฐานข้อมูล
-    if ($CustomerID != '') {
-        // อัปเดตข้อมูล customer
-        $stmt = $conn->prepare("UPDATE customers SET CustomerName=?, AddressLine1=?, City=?, Country=?, PostalCode=?, MobilePhone=? WHERE CustomerID=?");
-        $stmt->bind_param("ssssssi", $CustomerName, $AddressLine1, $City, $Country, $PostalCode, $MobilePhone, $CustomerID);
-    } else {
-        // เพิ่ม customer ใหม่
-        $stmt = $conn->prepare("INSERT INTO customers (CustomerName, AddressLine1, City, Country, PostalCode, MobilePhone) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssssss", $CustomerName, $AddressLine1, $City, $Country, $PostalCode, $MobilePhone);
-    }
-    $stmt->execute(); // รันคำสั่ง SQL
-    $stmt->close(); // ปิดคำสั่งที่เตรียมไว้
-    $conn->close(); // ปิดการเชื่อมต่อฐานข้อมูล
+if ($country == '') $err['Country'] = "Country is required";
+elseif (strlen($country) > 50) $err['Country'] = "Max 50 characters";
 
-    // เปลี่ยนเส้นทางกลับไปยังหน้ารายการลูกค้า
-    header("Location: customer.php");
+if ($postal == '') $err['PostalCode'] = "Postal Code is required";
+elseif (strlen($postal) != 5) $err['PostalCode'] = "Must be 5 digits";
+
+if ($phone == '') $err['MobilePhone'] = "Mobile Phone is required";
+elseif (!preg_match('/^0[0-9]{2}-[0-9]{3}-[0-9]{4}$/', $phone)) $err['MobilePhone'] = "Format: 0XX-XXX-XXXX (e.g., 081-234-5678)";
+
+// Error -> back to form
+if (!empty($err)) {
+    $_SESSION['err'] = $err;
+    $_SESSION['old'] = $_POST;
+    header("Location: customer_form.php" . ($id ? "?id=$id" : ""));
+    exit;
+}
+
+// Save
+if ($id != '') {
+    $stmt = $conn->prepare("UPDATE Customers SET CustomerName=?, AddressLine1=?, City=?, Country=?, PostalCode=?, MobilePhone=? WHERE CustomerID=?");
+    $stmt->bind_param("ssssssi", $name, $addr, $city, $country, $postal, $phone, $id);
+} else {
+    $stmt = $conn->prepare("INSERT INTO Customers (CustomerName, AddressLine1, City, Country, PostalCode, MobilePhone) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssssss", $name, $addr, $city, $country, $postal, $phone);
+}
+$stmt->execute();
+
+header("Location: customers.php");
 ?>
