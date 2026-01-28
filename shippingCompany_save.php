@@ -54,14 +54,8 @@
             'CountryErr' => $CountryErr
         ];
 
-        // เก็บค่าที่ผู้ใช้กรอกไว้ก่อนหน้า
-        $_SESSION['old'] = [
-            'ShippingCompanyID' => $ShippingCompanyID,
-            'CompanyName' => $CompanyName,
-            'Address' => $Address,
-            'City' => $City,
-            'Country' => $Country
-        ];
+        // เก็บข้อมูลเก่าใน session
+        $_SESSION['old'] = $_POST;
 
         // ย้อนกลับไปยังฟอร์ม
         header("Location: shippingCompany_form.php" . ($ShippingCompanyID ? "?id=$ShippingCompanyID" : ""));
@@ -71,11 +65,11 @@
     // ถ้าไม่มีข้อผิดพลาด ให้บันทึกข้อมูลลงฐานข้อมูล
     if ($ShippingCompanyID != '') {
         // อัปเดตข้อมูลบริษัท
-        $stmt = $conn->prepare("UPDATE ShippingCompanies SET CompanyName=?, Address=?, City=?, Country=? WHERE ShippingCompanyID=?");
+        $stmt = $conn->prepare("UPDATE shippingcompany SET CompanyName=?, Address=?, City=?, Country=? WHERE ShippingCompanyID=?");
         $stmt->bind_param("ssssi", $CompanyName, $Address, $City, $Country, $ShippingCompanyID);
     } else {
         // เพิ่มบริษัทใหม่
-        $stmt = $conn->prepare("INSERT INTO ShippingCompanies (CompanyName, Address, City, Country) VALUES (?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO shippingcompany (CompanyName, Address, City, Country) VALUES (?, ?, ?, ?)");
         $stmt->bind_param("ssss", $CompanyName, $Address, $City, $Country);
     }
     $stmt->execute();
@@ -83,5 +77,5 @@
     $conn->close();
 
     // เปลี่ยนเส้นทางกลับไปยังหน้ารายการบริษัทขนส่ง
-    header("Location: shippingCompanies.php");
+    header("Location: shippingCompany.php");
 ?>

@@ -15,7 +15,7 @@
 
     // ตรวจสอบว่ามีการส่ง id มาหรือไม่
     if ($id != ''){
-        $sql = "SELECT * FROM ShippingCompany WHERE ShippingCompanyID = ?";
+        $sql = "SELECT * FROM shippingcompany WHERE ShippingCompanyID = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $id);
         $stmt->execute();
@@ -34,58 +34,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style_form.css">
-    <title>shipping Company Form</title>
+    <title>Shipping Company Form</title>
 </head>
 <body class="form-body">
     <div class="form-container">
         <h1 class="form-title">
+
         <?php echo $shippingCompany ? "Edit Shipping Company" : "Add Shipping Company"; ?></h1>
+        
         <form class="product-form" method="POST" action="shippingCompany_save.php">
 
         <!-- input ของ id -->
-            <input type="hidden" name="ShippingCompanyID" value="<?php echo htmlspecialchars($shippingCompany['ShippingCompanyID'] ?? $old['ShippingCompanyID'] ?? ''); ?>">
+            <input type="hidden" name="ShippingCompanyID" value="<?php echo htmlspecialchars($old['ShippingCompanyID'] ?? $shippingCompany['ShippingCompanyID'] ?? ''); ?>">
 
         <!-- input ของชื่อบริษัท -->
             <div class="form-group">
                 <label for="CompanyName">Company Name:</label>
-                <input type="text" id="CompanyName" name="CompanyName" value="<?php echo htmlspecialchars($shippingCompany['CompanyName'] ?? $old['CompanyName'] ?? ''); ?>" class="form-input" required>
+                <input type="text" id="CompanyName" name="CompanyName" value="<?php echo htmlspecialchars($old['CompanyName'] ?? $shippingCompany['CompanyName'] ?? ''); ?>" class="form-input" required>
 
                 <!-- แสดงข้อความ error ถ้ามี -->
-                <?php if (isset($errors['CompanyName'])): ?>
-                    <div class="error-message"><?php echo htmlspecialchars($errors['CompanyName']); ?></div>
+                <?php if (!empty($errors['CompanyNameErr'])): ?>
+                    <div class="error-message"><?php echo htmlspecialchars($errors['CompanyNameErr']); ?></div>
                 <?php endif; ?>
             </div>
             
             <!-- input ของที่อยู่ -->
             <div class="form-group">
                 <label for="Address">Address:</label>
-                <input type="text" id="Address" name="Address" value="<?php echo htmlspecialchars($shippingCompany['Address'] ?? $old['Address'] ?? ''); ?>" class="form-input" required>
+                <input type="text" id="Address" name="Address" value="<?php echo htmlspecialchars($old['Address'] ?? $shippingCompany['Address'] ?? ''); ?>" class="form-input" required>
 
                 <!-- แสดงข้อความ error ถ้ามี -->
-                <?php if (isset($errors['Address'])): ?>
-                    <div class="error-message"><?php echo htmlspecialchars($errors['Address']); ?></div>
+                <?php if (!empty($errors['AddressErr'])): ?>
+                    <div class="error-message"><?php echo htmlspecialchars($errors['AddressErr']); ?></div>
                 <?php endif; ?>
             </div>
 
             <!-- input ของเมือง -->
             <div class="form-group">
                 <label for="City">City:</label>
-                <input type="text" id="City" name="City" value="<?php echo htmlspecialchars($shippingCompany['City'] ?? $old['City'] ?? ''); ?>" class="form-input" required>
+                <input type="text" id="City" name="City" value="<?php echo htmlspecialchars($old['City'] ?? $shippingCompany['City'] ?? ''); ?>" class="form-input" required>
 
                 <!-- แสดงข้อความ error ถ้ามี -->
-                <?php if (isset($errors['City'])): ?>
-                    <div class="error-message"><?php echo htmlspecialchars($errors['City']); ?></div>
+                <?php if (!empty($errors['CityErr'])): 
+                    ?>
+                    <div class="error-message"><?php echo htmlspecialchars($errors['CityErr']); ?></div>
                 <?php endif; ?>
             </div>
 
             <!-- input ของประเทศ -->
             <div class="form-group">
                 <label for="Country">Country:</label>
-                <input type="text" id="Country" name="Country" value="<?php echo htmlspecialchars($shippingCompany['Country'] ?? $old['Country'] ?? ''); ?>" class="form-input" required>
+                <input type="text" id="Country" name="Country" value="<?php echo htmlspecialchars($old['Country'] ?? $shippingCompany['Country'] ?? ''); ?>" class="form-input" required>
 
                 <!-- แสดงข้อความ error ถ้ามี -->
-                <?php if (isset($errors['Country'])): ?>
-                    <div class="error-message"><?php echo htmlspecialchars($errors['Country']); ?></div>
+                <?php if (!empty($errors['CountryErr'])): ?>
+                    <div class="error-message"><?php echo htmlspecialchars($errors['CountryErr']); ?></div>
                 <?php endif; ?>
             </div>
             

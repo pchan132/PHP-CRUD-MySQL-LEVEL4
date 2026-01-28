@@ -59,9 +59,10 @@
         <form class="product-form" method="POST" action="product_save.php">
             <input type="hidden" name="ProductID" value="<?php echo htmlspecialchars($product['ProductID'] ?? $old['ProductID'] ?? ''); ?>">
 
+            <!-- Product Name -->
             <div class="form-group">
                 <label for="ProductName" class="form-label">Product Name:</label>
-                <input type="text" id="ProductName" name="ProductName" class="form-input" value="<?php echo htmlspecialchars($product['ProductName'] ?? $old['ProductName'] ?? ''); ?>" required>
+                <input type="text" id="ProductName" name="ProductName" class="form-input" value="<?php echo htmlspecialchars($old['ProductName'] ?? $product['ProductName'] ?? ''); ?>" required>
 
                 <!-- แสดง Error message ถ้ามี -->
                  <?php if (!empty($errors['ProductName'])): ?>
@@ -69,9 +70,10 @@
                  <?php endif; ?>
             </div>
 
+            <!-- Picture URL -->
             <div class="form-group">
                 <label for="Picture" class="form-label">Picture URL:</label>
-                <input type="text" id="Picture" name="Picture" class="form-input" value="<?php echo htmlspecialchars($product['Picture'] ?? $old['Picture'] ?? ''); ?>">
+                <input type="text" id="Picture" name="Picture" class="form-input" value="<?php echo htmlspecialchars($old['Picture'] ?? $product['Picture'] ?? ''); ?>">
 
                 <!-- แสดง Error message ถ้ามี -->
                  <?php if (!empty($errors['Picture'])): ?>
@@ -81,7 +83,7 @@
 
             <div class="form-group">
                 <label for="Category" class="form-label">Category:</label>
-                <input type="text" id="Category" name="Category" class="form-input" value="<?php echo htmlspecialchars($product['Category'] ?? $old['Category'] ?? ''); ?>">
+                <input type="text" id="Category" name="Category" class="form-input" value="<?php echo htmlspecialchars($old['Category'] ?? $product['Category'] ?? ''); ?>">
 
                 <!-- แสดง Error message ถ้ามี -->
                  <?php if (!empty($errors['Category'])): ?>
@@ -91,7 +93,7 @@
 
             <div class="form-group">
                 <label for="ProductDescription" class="form-label">Product Description:</label>
-                <textarea id="ProductDescription" name="ProductDescription" class="form-textarea"><?php echo htmlspecialchars($product['ProductDescription'] ?? $old['ProductDescription'] ?? ''); ?></textarea>
+                <textarea id="ProductDescription" name="ProductDescription" class="form-textarea"><?php echo htmlspecialchars($old['ProductDescription'] ?? $product['ProductDescription'] ?? ''); ?></textarea>
 
                 <!-- แสดง Error message ถ้ามี -->
                  <?php if (!empty($errors['ProductDescription'])): ?>
@@ -101,7 +103,7 @@
 
             <div class="form-group">
                 <label for="Price" class="form-label">Price:</label>
-                <input type="number" id="Price" step="0.01" name="Price" class="form-input" value="<?php echo htmlspecialchars($product['Price'] ?? $old['Price'] ?? ''); ?>" required>
+                <input type="number" id="Price" step="0.01" name="Price" class="form-input" value="<?php echo htmlspecialchars($old['Price'] ?? $product['Price'] ?? ''); ?>" required>
 
                 <!-- แสดง Error message ถ้ามี -->
                  <?php if (!empty($errors['Price'])): ?>
@@ -111,7 +113,7 @@
 
             <div class="form-group">
                 <label for="QuantityStock" class="form-label">Quantity:</label>
-                <input type="number" id="QuantityStock" step="1" name="QuantityStock" class="form-input" value="<?php echo htmlspecialchars($product['QuantityStock'] ?? $old['QuantityStock'] ?? ''); ?>" required>
+                <input type="number" id="QuantityStock" step="1" name="QuantityStock" class="form-input" value="<?php echo htmlspecialchars($old['QuantityStock'] ?? $product['QuantityStock'] ?? ''); ?>" required>
 
                 <!-- แสดง Error message ถ้ามี -->
                  <?php if (!empty($errors['QuantityStock'])): ?>

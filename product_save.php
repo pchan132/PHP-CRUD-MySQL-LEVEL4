@@ -69,17 +69,9 @@
         ];
 
         // เก็บข้อมูลเดิมไว้ใน session
-        $_SESSION['old'] = [
-            'ProductID' => $ProductID,
-            'ProductName' => $ProductName,
-            'Picture' => $Picture,
-            'Category' => $Category,
-            'ProductDescription' => $ProductDescription,
-            'Price' => $Price,
-            'QuantityStock' => $QuantityStock
-        ];
+        $_SESSION['old'] = $_POST;
 
-        header("Location: product_form.php");
+        header("Location: product_form.php" . ($ProductID ? "?id=$ProductID" : ""));
 
         exit();
     }

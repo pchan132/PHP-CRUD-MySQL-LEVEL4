@@ -77,7 +77,7 @@ if ($id != ''){
         <div class="form-group">
             <!-- input ของ address line 1 -->
              <label for="AddressLine1">Address Line 1:</label>
-             <input type="text" id="AddressLine1" name="AddressLine1" value="<?php echo htmlspecialchars($customer['AddressLine1'] ?? $old['AddressLine1'] ?? ''); ?>" class="form-input">
+             <input type="text" id="AddressLine1" name="AddressLine1" value="<?php echo htmlspecialchars($old['AddressLine1'] ?? $customer['AddressLine1'] ?? ''); ?>" class="form-input">
                 
                 <!-- แสดงข้อความ error ถ้ามี -->
                 <?php if (!empty($errors['AddressLine1'])): ?>
@@ -88,7 +88,7 @@ if ($id != ''){
             <div class="form-group">
                 <!-- input ของ city -->
                 <label for="City" class="form-label">City:</label>
-                <input type="text" id="City" name="City" value="<?php echo htmlspecialchars($customer['City'] ?? $old['City'] ?? ''); ?>" class="form-input">
+                <input type="text" id="City" name="City" value="<?php echo htmlspecialchars($old['City'] ?? $customer['City'] ?? ''); ?>" class="form-input">
 
                 <!-- แสดงข้อความ error ถ้ามี -->
                 <?php if (!empty($errors['City'])): ?>
@@ -99,7 +99,7 @@ if ($id != ''){
             <div class="form-group">
                 <!-- input ของ country -->
                 <label for="Country" class="form-label">Country:</label>
-                <input type="text" id="Country" name="Country" value="<?php echo htmlspecialchars($customer['Country'] ?? $old['Country'] ?? ''); ?>" class="form-input">
+                <input type="text" id="Country" name="Country" value="<?php echo htmlspecialchars($old['Country'] ?? $customer['Country'] ?? ''); ?>" class="form-input">
                 
                 <!-- แสดงข้อความ error ถ้ามี -->
                 <?php if (!empty($errors['Country'])): ?>
@@ -110,7 +110,7 @@ if ($id != ''){
             <div class="form-group">
                 <!-- input ของ postal code -->
                 <label for="PostalCode" class="form-label">Postal Code:</label>
-                <input type="text" id="PostalCode" name="PostalCode" value="<?php echo htmlspecialchars($customer['PostalCode'] ?? $old['PostalCode'] ?? ''); ?>" class="form-input">
+                <input type="text" id="PostalCode" name="PostalCode" value="<?php echo htmlspecialchars($old['PostalCode'] ?? $customer['PostalCode'] ?? ''); ?>" class="form-input">
                 
                 <!-- แสดงข้อความ error ถ้ามี -->
                 <?php if (!empty($errors['PostalCode'])): ?>
@@ -121,7 +121,7 @@ if ($id != ''){
             <div class="form-group">
                 <!-- input ของ mobile phone -->
                 <label for="MobilePhone" class="form-label">Mobile Phone:</label>
-                <input type="text" id="MobilePhone" name="MobilePhone" value="<?php echo htmlspecialchars($customer['MobilePhone'] ?? $old['MobilePhone'] ?? ''); ?>" class="form-input">
+                <input type="text" id="MobilePhone" name="MobilePhone" value="<?php echo htmlspecialchars($old['MobilePhone'] ?? $customer['MobilePhone'] ?? ''); ?>" class="form-input">
 
                 <!-- แสดงข้อความ error ถ้ามี -->
                 <?php if (!empty($errors['MobilePhone'])): ?>
